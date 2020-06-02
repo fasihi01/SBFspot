@@ -73,7 +73,6 @@ DISCLAIMER:
 #include <boost/algorithm/string.hpp>
 #include <boost/asio/ip/address.hpp>
 #include "mqtt.h"
-#include <unistd.h>
 
 using namespace std;
 using namespace boost;
@@ -583,7 +582,7 @@ int main(int argc, char **argv)
                                 std::cout << "Error " << rc << " while publishing to MQTT Broker" << std::endl;
 				break;
                         }
-                        usleep(5000000);
+                        sleep(5);
                 }
         }
 
