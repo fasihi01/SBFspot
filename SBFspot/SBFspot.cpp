@@ -457,7 +457,8 @@ int main(int argc, char **argv)
     if ((rc = getInverterData(Inverters, SpotACPower)) != 0)
         std::cerr << "getSpotACPower returned an error: " << rc << std::endl;
 
-    if ((rc = getInverterData(Inverters, SpotACVoltage)) != 0)
+    if ((rc = 
+	 (Inverters, SpotACVoltage)) != 0)
         std::cerr << "getSpotACVoltage returned an error: " << rc << std::endl;
 
     if ((rc = getInverterData(Inverters, SpotACTotalPower)) != 0)
@@ -552,18 +553,39 @@ int main(int argc, char **argv)
 	/*******
 	* MQTT *
 	********/
-	if (cfg.mqtt == 1) // MQTT enabled
-	{
-		for (int count=0; count<100; count++)
-	    	{
-			rc = mqtt_publish(&cfg, Inverters);
-			if (rc != 0)
-			{
-				std::cout << "Error " << rc << " while publishing to MQTT Broker" << std::endl;
-			}
-			usleep(1000);
-		}
-	}
+	 if (cfg.mqtt == 1) // MQTT enabled
+        {
+                for (int count=0; count<10000000; count++)
+                {
+                        getInverterData(Inverters, EnergyProduction);
+                        if ((rc = getInverterData(Inverters, SpotDCPower)) != 0)
+                                std::cerr << "getSpotDCPower returned an error: " << rc << std::endl;
+
+                        if ((rc = getInverterData(Inverters, SpotDCVoltage)) != 0)
+                        {
+                                std::cerr << "getSpotDCVoltage returned an error: " << rc << std::endl;
+                                break;
+                        }
+
+                        if ((rc = getInverterData(Inverters, SpotACTotalPower)) != 0)
+                        {
+                                std::cerr << "getSpotDCVoltage returned an error: " << rc << std::endl;
+                                break;
+                        }
+
+                        //Calculate missing DC Spot Values
+                        CalcMissingSpot(Inverters[0]);
+
+                        rc = mqtt_publish(&cfg, Inverters);
+
+                        if (rc != 0)
+                        {
+                                std::cout << "Error " << rc << " while publishing to MQTT Broker" << std::endl;
+				break;
+                        }
+                        usleep(5000000);
+                }
+        }
 
 	//SolarInverter -> Continue to get archive data
 	unsigned int idx;
