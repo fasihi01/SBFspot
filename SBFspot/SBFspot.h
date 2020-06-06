@@ -275,6 +275,7 @@ typedef struct
     S123_COMMAND	s123;		// -123s		123Solar Web Solar logger support(http://www.123solar.org/)
 	int		settime;			// -settime		Set plant time
 	int		mqtt;				// -mqtt		Publish spot data to mqtt broker
+    int		continuousMqtt;		// -continuousMqtt		Publish spot data to mqtt broker continously
 } Config;
 
 
