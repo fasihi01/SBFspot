@@ -1,5 +1,5 @@
 /************************************************************************************************
-	SBFspot - Yet another tool to read power production of SMA® solar inverters
+	SBFspot - Yet another tool to read power production of SMAÂ® solar inverters
 	(c)2012-2019, SBF
 
 	Latest version found at https://github.com/SBFspot/SBFspot
@@ -8,8 +8,8 @@
 	http://creativecommons.org/licenses/by-nc-sa/3.0/
 
 	You are free:
-		to Share — to copy, distribute and transmit the work
-		to Remix — to adapt the work
+		to Share â€” to copy, distribute and transmit the work
+		to Remix â€” to adapt the work
 	Under the following conditions:
 	Attribution:
 		You must attribute the work in the manner specified by the author or licensor
@@ -275,6 +275,7 @@ typedef struct
     S123_COMMAND	s123;		// -123s		123Solar Web Solar logger support(http://www.123solar.org/)
 	int		settime;			// -settime		Set plant time
 	int		mqtt;				// -mqtt		Publish spot data to mqtt broker
+    int		continuousMqtt;		// -continuousMqtt		Publish spot data to mqtt broker continously
 } Config;
 
 
@@ -501,4 +502,5 @@ extern const char *IP_Broadcast;
 extern const char *IP_Inverter;
 
 extern TagDefs tagdefs;
+
 

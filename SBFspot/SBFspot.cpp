@@ -73,7 +73,9 @@ DISCLAIMER:
 #include <boost/algorithm/string.hpp>
 #include <boost/asio/ip/address.hpp>
 #include "mqtt.h"
-#include <unistd.h>
+#include <signal.h>
+#include <stdlib.h>
+#include "ContinuousMqtt.h"
 
 using namespace std;
 using namespace boost;
@@ -552,21 +554,15 @@ int main(int argc, char **argv)
 	/*******
 	* MQTT *
 	********/
-	if (cfg.mqtt == 1) // MQTT enabled
-	{
-		for (int count=0; count<100; count++)
-	    	{
-			rc = mqtt_publish(&cfg, Inverters);
-			if (rc != 0)
-			{
-				std::cout << "Error " << rc << " while publishing to MQTT Broker" << std::endl;
-			}
-			usleep(1000);
-		}
-	}
+    if (cfg.continuousMqtt)
+    {
+        continuousMqtt(Inverters, &cfg);
+        return 0;
+    }
 
-	//SolarInverter -> Continue to get archive data
-	unsigned int idx;
+
+    //SolarInverter -> Continue to get archive data
+    unsigned int idx;
 
     /***************
     * Get Day Data *
@@ -1808,6 +1804,7 @@ int parseCmdline(int argc, char **argv, Config *cfg)
 	cfg->startdate = 0;
 	cfg->settime = 0;
 	cfg->mqtt = 0;
+    cfg->continuousMqtt = 0;
 
 	bool help_requested = false;
 
@@ -2062,6 +2059,9 @@ int parseCmdline(int argc, char **argv, Config *cfg)
 
 		else if (stricmp(argv[i], "-mqtt") == 0)
 			cfg->mqtt = 1;
+
+        else if (stricmp(argv[i], "-continuousMqtt") == 0)
+            cfg->continuousMqtt = 1;
 
         //Show Help
         else if (stricmp(argv[i], "-?") == 0)
